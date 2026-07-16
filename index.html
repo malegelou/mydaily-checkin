@@ -1,71 +1,112 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>每日打卡</title>
+
+<title>吗喽陪你打卡</title>
 
 <style>
+
 body{
     margin:0;
     font-family:"Microsoft YaHei",sans-serif;
-    background:#f7f5f0;
+    background:#f5f2eb;
     color:#333;
 }
 
 .container{
     max-width:420px;
     margin:auto;
-    padding:25px;
+    padding:20px;
 }
 
 .card{
-    background:white;
-    border-radius:20px;
+    background:#fff;
+    border-radius:25px;
     padding:25px;
     box-shadow:0 5px 20px #ddd;
-    text-align:center;
 }
+
 
 h1{
-    font-size:28px;
+    text-align:center;
+    font-size:26px;
 }
 
+
 .date{
+    text-align:center;
     color:#888;
     margin-bottom:20px;
 }
+
 
 button{
     width:100%;
     padding:15px;
     border:none;
     border-radius:30px;
-    background:#7c9cff;
+    background:#8ca6db;
     color:white;
-    font-size:18px;
-    cursor:pointer;
+    font-size:17px;
 }
+
 
 button:active{
-    transform:scale(.98);
+    transform:scale(.97);
 }
+
 
 .stats{
-    margin-top:20px;
     display:flex;
     justify-content:space-around;
+    margin:25px 0;
 }
+
 
 .number{
-    font-size:28px;
-    color:#7c9cff;
+    font-size:30px;
+    color:#8ca6db;
+    text-align:center;
 }
 
-.record{
+
+.section{
     margin-top:20px;
-    text-align:left;
 }
+
+
+textarea{
+    width:100%;
+    height:80px;
+    border-radius:15px;
+    border:1px solid #ddd;
+    padding:10px;
+    box-sizing:border-box;
+}
+
+
+.task{
+    background:#f8f8f8;
+    padding:10px;
+    border-radius:12px;
+    margin:8px 0;
+}
+
+
+.task input{
+    margin-right:8px;
+}
+
+
+.add{
+    margin-top:10px;
+    background:#ddd;
+    color:#555;
+}
+
 
 .item{
     background:#f8f8f8;
@@ -73,109 +114,535 @@ button:active{
     border-radius:12px;
     margin-bottom:10px;
 }
+
+
+
+/* 吗喽弹窗 */
+
+.modal{
+
+display:none;
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,.4);
+
+align-items:center;
+justify-content:center;
+
+}
+
+
+.popup{
+
+background:white;
+
+width:280px;
+
+padding:25px;
+
+border-radius:25px;
+
+text-align:center;
+
+}
+
+
+.popup img{
+
+width:150px;
+
+height:150px;
+
+object-fit:contain;
+
+}
+
+
+.close{
+
+background:#8ca6db;
+
+margin-top:15px;
+
+}
+
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
+
 
 <div class="card">
 
-<h1>🌱 每日打卡</h1>
+
+<h1>🐒 吗喽陪你打卡</h1>
+
 
 <div class="date" id="date"></div>
 
-<button onclick="checkIn()">完成今日打卡</button>
+
+
+<button onclick="checkIn()">
+完成今日打卡
+</button>
+
+
 
 <div class="stats">
 
+
 <div>
-<div class="number" id="days">0</div>
+
+<div class="number" id="days">
+0
+</div>
+
 连续天数
+
 </div>
+
+
 
 <div>
-<div class="number" id="total">0</div>
+
+<div class="number" id="total">
+0
+</div>
+
 累计次数
-</div>
 
 </div>
 
-<div class="record">
-<h3>打卡记录</h3>
+
+</div>
+
+
+
+
+
+<div class="section">
+
+<h3>🎯 吗喽任务清单</h3>
+
+
+<div id="tasks"></div>
+
+
+<button class="add" onclick="addTask()">
++ 添加任务
+</button>
+
+
+</div>
+
+
+
+
+
+
+<div class="section">
+
+<h3>💭 今日感受</h3>
+
+
+<textarea 
+id="feeling"
+placeholder="今天过得怎么样？（可以不写）">
+</textarea>
+
+
+</div>
+
+
+
+
+
+
+<div class="section">
+
+<h3>📅 打卡记录</h3>
+
 <div id="list"></div>
+
 </div>
+
+
+
 
 </div>
 
 </div>
+
+
+
+
+
+<!-- 吗喽弹窗 -->
+
+<div class="modal" id="modal">
+
+
+<div class="popup">
+
+
+<h2>🐒 吗喽今日评价</h2>
+
+
+<img id="malou" src="images/malou1.png">
+
+
+<p id="quote"></p>
+
+
+<button class="close" onclick="closeModal()">
+继续努力
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
 
 
 <script>
 
-let records = JSON.parse(localStorage.getItem("records")||"[]");
+
+let records =
+JSON.parse(localStorage.getItem("records")||"[]");
+
+
+let tasks =
+JSON.parse(localStorage.getItem("tasks")||
+'["学英语","学习AI","运动一下","早点睡"]');
+
+
+
+
+
+let quotes=[
+
+"吗喽看了一眼：还行，今天没有完全摆烂。",
+
+"震惊！此人居然完成了任务。",
+
+"今天没有拯救世界，但完成了一件自己的事。",
+
+"吗喽确认：这个人类还有救。",
+
+"不错，成功从床上爬起来了。",
+
+"生活很难，但你今天又苟住了。",
+
+"今日营业结束，奖励自己摸鱼五分钟。",
+
+"吗喽鼓掌三秒，已经很给面子了。"
+
+];
+
+
+
+
+
+let pictures=[
+
+"images/malou1.png",
+
+"images/malou2.png",
+
+"images/malou3.png"
+
+];
+
+
+
+
 
 function show(){
 
+
 let today=new Date();
 
-document.getElementById("date").innerHTML =
+
+document.getElementById("date").innerHTML=
 today.toLocaleDateString();
 
-document.getElementById("total").innerHTML =
+
+
+
+document.getElementById("total").innerHTML=
 records.length;
 
-let days=0;
 
-for(let i=records.length-1;i>=0;i--){
-    if(i===records.length-1-days){
-        days++;
-    }
-}
 
-document.getElementById("days").innerHTML=days;
+let days=calculateDays();
+
+
+document.getElementById("days").innerHTML=
+days;
+
+
 
 
 let html="";
 
+
 records.slice().reverse().forEach(r=>{
+
+
 html+=`
+
 <div class="item">
-✅ ${r}
+
+✅ ${r.date}
+
+<br>
+
+${r.feeling||""}
+
 </div>
+
 `;
+
 });
+
 
 document.getElementById("list").innerHTML=html;
 
+
+
+showTasks();
+
+
 }
+
+
+
+
+
+function calculateDays(){
+
+
+if(records.length==0)
+return 0;
+
+
+let count=1;
+
+
+for(let i=records.length-1;i>0;i--){
+
+
+let now=new Date(records[i].date);
+
+let before=new Date(records[i-1].date);
+
+
+let diff=(now-before)/86400000;
+
+
+
+if(diff==1)
+
+count++;
+
+else
+
+break;
+
+
+}
+
+
+return count;
+
+
+}
+
+
+
+
 
 
 function checkIn(){
 
-let today=new Date().toLocaleDateString();
 
-if(records.includes(today)){
-alert("今天已经打卡啦😂");
+let today=
+new Date().toLocaleDateString();
+
+
+
+if(records.some(r=>r.date==today)){
+
+
+alert("🐒 吗喽发现你今天已经打过卡啦");
+
 return;
+
+
 }
 
-records.push(today);
+
+
+records.push({
+
+date:today,
+
+feeling:
+document.getElementById("feeling").value
+
+});
+
+
 
 localStorage.setItem(
 "records",
 JSON.stringify(records)
 );
 
+
+
 show();
+
+
+showModal();
+
 
 }
 
 
+
+
+
+
+
+function showModal(){
+
+
+document.getElementById("modal")
+.style.display="flex";
+
+
+
+document.getElementById("quote")
+.innerHTML=
+quotes[
+Math.floor(Math.random()*quotes.length)
+];
+
+
+
+document.getElementById("malou")
+.src=
+pictures[
+Math.floor(Math.random()*pictures.length)
+];
+
+
+}
+
+
+
+function closeModal(){
+
+document.getElementById("modal")
+.style.display="none";
+
+}
+
+
+
+
+
+
+
+function showTasks(){
+
+
+let html="";
+
+
+tasks.forEach(t=>{
+
+
+html+=`
+
+<div class="task">
+
+<input type="checkbox">
+
+${t}
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById("tasks").innerHTML=html;
+
+
+}
+
+
+
+
+
+function addTask(){
+
+
+let t=prompt("输入你的任务");
+
+
+if(t){
+
+
+tasks.push(t);
+
+
+localStorage.setItem(
+"tasks",
+JSON.stringify(tasks)
+);
+
+
+showTasks();
+
+
+}
+
+
+}
+
+
+
+
+
 show();
+
+
 
 </script>
 
+
 </body>
+
 </html>
