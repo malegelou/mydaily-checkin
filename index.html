@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日打卡</title>
+
+<style>
+body{
+    margin:0;
+    font-family:"Microsoft YaHei",sans-serif;
+    background:#f7f5f0;
+    color:#333;
+}
+
+.container{
+    max-width:420px;
+    margin:auto;
+    padding:25px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 5px 20px #ddd;
+    text-align:center;
+}
+
+h1{
+    font-size:28px;
+}
+
+.date{
+    color:#888;
+    margin-bottom:20px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:30px;
+    background:#7c9cff;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+.stats{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-around;
+}
+
+.number{
+    font-size:28px;
+    color:#7c9cff;
+}
+
+.record{
+    margin-top:20px;
+    text-align:left;
+}
+
+.item{
+    background:#f8f8f8;
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>🌱 每日打卡</h1>
+
+<div class="date" id="date"></div>
+
+<button onclick="checkIn()">完成今日打卡</button>
+
+<div class="stats">
+
+<div>
+<div class="number" id="days">0</div>
+连续天数
+</div>
+
+<div>
+<div class="number" id="total">0</div>
+累计次数
+</div>
+
+</div>
+
+<div class="record">
+<h3>打卡记录</h3>
+<div id="list"></div>
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+let records = JSON.parse(localStorage.getItem("records")||"[]");
+
+function show(){
+
+let today=new Date();
+
+document.getElementById("date").innerHTML =
+today.toLocaleDateString();
+
+document.getElementById("total").innerHTML =
+records.length;
+
+let days=0;
+
+for(let i=records.length-1;i>=0;i--){
+    if(i===records.length-1-days){
+        days++;
+    }
+}
+
+document.getElementById("days").innerHTML=days;
+
+
+let html="";
+
+records.slice().reverse().forEach(r=>{
+html+=`
+<div class="item">
+✅ ${r}
+</div>
+`;
+});
+
+document.getElementById("list").innerHTML=html;
+
+}
+
+
+function checkIn(){
+
+let today=new Date().toLocaleDateString();
+
+if(records.includes(today)){
+alert("今天已经打卡啦😂");
+return;
+}
+
+records.push(today);
+
+localStorage.setItem(
+"records",
+JSON.stringify(records)
+);
+
+show();
+
+}
+
+
+show();
+
+</script>
+
+</body>
+</html>
