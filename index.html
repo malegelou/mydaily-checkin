@@ -329,9 +329,18 @@ let records =
 JSON.parse(localStorage.getItem("records")||"[]");
 
 
+let defaultTasks=[
+"每日签到",
+"学英语",
+"看书",
+"运动一下",
+"早点睡"
+];
+
+
 let tasks =
-JSON.parse(localStorage.getItem("tasks")||
-'["每日签到""学英语","学法语","运动一下","早点睡"]');
+JSON.parse(localStorage.getItem("tasks"))
+|| defaultTasks;
 
 
 
