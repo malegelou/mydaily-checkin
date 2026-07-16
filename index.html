@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>吗喽陪你打卡</title>
+<title>今日打卡</title>
 
 <style>
 
@@ -188,7 +188,7 @@ margin-top:15px;
 <div class="card">
 
 
-<h1>🐒 吗喽陪你打卡</h1>
+<h1>每日打卡 🐒</h1>
 
 
 <div class="date" id="date"></div>
@@ -235,7 +235,7 @@ margin-top:15px;
 
 <div class="section">
 
-<h3>🎯 吗喽任务清单</h3>
+<h3>🎯 任务清单</h3>
 
 
 <div id="tasks"></div>
@@ -260,7 +260,7 @@ margin-top:15px;
 
 <textarea 
 id="feeling"
-placeholder="今天过得怎么样？（可以不写）">
+placeholder="今天过得怎么样？">
 </textarea>
 
 
@@ -331,7 +331,7 @@ JSON.parse(localStorage.getItem("records")||"[]");
 
 let tasks =
 JSON.parse(localStorage.getItem("tasks")||
-'["学英语","学习AI","运动一下","早点睡"]');
+'["每日签到""学英语","学法语","运动一下","早点睡"]');
 
 
 
@@ -367,7 +367,9 @@ let pictures=[
 
 "images/malou2.png",
 
-"images/malou3.png"
+"images/malou3.png",
+
+ "images/malou4.gif"  
 
 ];
 
